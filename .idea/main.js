@@ -97,7 +97,7 @@ function readData() {
     return  innovTest.questions;
 }
 
-function initButtons (questionNumbers) {
+function initButtons () {
 
     $("#variantBtn1").click(function () {
         evaluateAns(this.id, $('#' + this.id).text());
@@ -115,7 +115,7 @@ function initButtons (questionNumbers) {
 
 
     $("#variantBtn4").click(function () {
-        evaluateAns(this.id, $('#' + this.id).text(),correctAns);
+        evaluateAns(this.id, $('#' + this.id).text());
     });
 
 }
@@ -130,7 +130,7 @@ function communicateResult()
     }
 }
 
-function twinkleButton(button_id)
+function twinkleCorrectButton(button_id)
 {
 
     $('#'+button_id).css('color','black');
@@ -156,7 +156,7 @@ function twinkleWrongAndCorrectButton(wrong_button_id, correct_button_id)
 
 function evaluateAns(button_id, buttonText){
 
-    let correctAns= innovTest.questions[questionNumbers[innovTest.questionOrder]]["correctVariant"]
+    let correctAns= innovTest.questions[innovTest.questionOrder]["correctVariant"];
     let correct_button_id;
     console.log("Evaluating answer"+button_id);
     console.log("Current correct answer "+ correctAns);
@@ -172,7 +172,7 @@ function evaluateAns(button_id, buttonText){
 
                     }
         temps = 900;
-      twinkleButton(button_id);
+      twinkleCorrectButton(button_id);
     }
     else {
         document.getElementById(button_id).style.background = 'red';
@@ -181,7 +181,7 @@ function evaluateAns(button_id, buttonText){
         innovTest.countInorrect++;
 
                     for (var variantsCounter = 1; variantsCounter<innovTest.variantsAmount+1; variantsCounter++){ // Buttons are numberd 1-4
-                        console.log ("Disabling buttons 555"+ $("#variantBtn"+variantsCounter).text());
+                        console.log ("Disabling buttons"+ $("#variantBtn"+variantsCounter).text());
                         if ($("#variantBtn"+variantsCounter).text()==correctAns){
                             correct_button_id = "#variantBtn"+variantsCounter;
                            $(correct_button_id).css('background-color','green');
@@ -198,11 +198,11 @@ function evaluateAns(button_id, buttonText){
 
     } else {
         innovTest.questionOrder++;
-        setTimeout( function(){ setQuestion(questionNumbers[innovTest.questionOrder]); }, 1500);
+        setTimeout( function(){ setQuestion(innovTest.questions[innovTest.questionOrder]); }, 1500);
         }
 }
 
-function setQuestion(currentQuestionNumber) {
+function setQuestion(currentQuestion) {
     console.log("Amount of questions in class instance "+innovTest.variantsAmount);
 
                 for (var variantsCounter = 1; variantsCounter<innovTest.variantsAmount+1; variantsCounter++){ // Buttons are numberd 1-4
@@ -212,8 +212,10 @@ function setQuestion(currentQuestionNumber) {
 
     console.log("questions length " +innovTest.questions.length);
     console.log("current question object ");
-    console.log(innovTest.questions[currentQuestionNumber]);
-    let question = innovTest.questions[currentQuestionNumber]['original'];
+    console.log("current Question ");
+    console.log(currentQuestion);
+
+    let question = currentQuestion['original'];
 
     $('#txtArQuestion').text(question);
     console.log("Question text "+question);
@@ -221,8 +223,8 @@ function setQuestion(currentQuestionNumber) {
 
     for (var variantsCounter = 1; variantsCounter<innovTest.variantsAmount+1; variantsCounter++){ // Buttons are numberd 1-4
         let buttonName = "variant"+variantsCounter;
-        console.log ("555Text of the button "+innovTest.questions[currentQuestionNumber][buttonName]);
-        $("#variantBtn"+variantsCounter).text(innovTest.questions[currentQuestionNumber][buttonName]);
+        console.log ("777Text of the button "+currentQuestion[buttonName]);
+        $("#variantBtn"+variantsCounter).text(currentQuestion[buttonName]);
     }
     console.log("Finishes setting question2 "+ new Date());
 }
@@ -244,14 +246,14 @@ function buildIntArrayWithLenght(lenght) {
 
 function init() {
     innovTest.questions = readJson('testinnov.json');
-     questionNumbers = buildIntArrayWithLenght(innovTest.questions.length);
+    // questionNumbers = buildIntArrayWithLenght(innovTest.questions.length);
     console.log('questionssssssssssss34534 ' + innovTest.questions.length);
     console.log('array');
-    console.log(questionNumbers);
-    shuffleArr(questionNumbers);
+   // console.log(questionNumbers);
+    shuffleArr(innovTest.questions);
     console.log('array after');
-    console.log(questionNumbers);
-    setQuestion(questionNumbers[0]);
-    initButtons(questionNumbers);
+   // console.log(questionNumbers);
+    setQuestion(innovTest.questions[0]);
+    initButtons();
 }
 init();
