@@ -103,7 +103,6 @@ function initButtons () {
         evaluateAns(this.id, $('#' + this.id).text());
     });
 
-
     $("#variantBtn2").click(function () {
         evaluateAns(this.id, $('#' + this.id).text());
     });
@@ -130,26 +129,42 @@ function communicateResult()
     }
 }
 
+
+
+// var blink = function() {
+//     console.log("Blinking start");
+//     $('#variant1').animate({
+//         opacity: '0'
+//     }, function(){
+//         $(this).animate({
+//             opacity: '1'
+//         }, blink);
+//     });
+// }
+//
+// blink();
+
 function twinkleCorrectButton(button_id)
 {
-
     $('#'+button_id).css('color','black');
+    let state = false;
+    $('#'+button_id).effect("pulsate", { times:5 }, 1000);
 
-    $('#'+button_id).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
+
+
+   // $('#'+button_id).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
 }
 
 
 function twinkleWrongAndCorrectButton(wrong_button_id, correct_button_id)
 {
+  //  $('#'+button_id).css('color','black');
+    let state = false;
+    $('#'+wrong_button_id).effect("pulsate", { times:5 }, 1000);
 
-    $('#'+wrong_button_id).css('color','black');
-
-    $('#'+wrong_button_id).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
+    $(correct_button_id).effect("pulsate", { times:5 }, 1000);
 
 
-    $(correct_button_id).css('color','black');
-
-    $(correct_button_id).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
 
 }
 
@@ -158,13 +173,12 @@ function evaluateAns(button_id, buttonText){
 
     let correctAns= innovTest.questions[innovTest.questionOrder]["correctVariant"];
     let correct_button_id;
-    console.log("Evaluating answer"+button_id);
     console.log("Current correct answer "+ correctAns);
 
     if (buttonText == correctAns) {
 
         $('#txtArQuestion').text("Правильно!");
-        document.getElementById(button_id).style.background = 'green';
+       $('#'+button_id).css('background-color','green');
         innovTest.countCorrect++;
                     for (var variantsCounter = 1; variantsCounter<innovTest.variantsAmount+1; variantsCounter++){ // Buttons are numberd 1-4
                         console.log ("Disabling buttons");
@@ -175,7 +189,7 @@ function evaluateAns(button_id, buttonText){
       twinkleCorrectButton(button_id);
     }
     else {
-        document.getElementById(button_id).style.background = 'red';
+        $('#'+button_id).css('background-color','red');
 
         $('#txtArQuestion').text("Неправильно!");
         innovTest.countInorrect++;
@@ -206,53 +220,35 @@ function setQuestion(currentQuestion) {
     console.log("Amount of questions in class instance "+innovTest.variantsAmount);
 
                 for (var variantsCounter = 1; variantsCounter<innovTest.variantsAmount+1; variantsCounter++){ // Buttons are numberd 1-4
-                    console.log ("Enabling buttons");
-                    $("#variantBtn"+variantsCounter).css('background-color','#E9E7F2');
+                  $("#variantBtn"+variantsCounter).css('background-color','#E9E7F2');
                 }
 
-    console.log("questions length " +innovTest.questions.length);
-    console.log("current question object ");
-    console.log("current Question ");
-    console.log(currentQuestion);
-
-    let question = currentQuestion['original'];
+        let question = currentQuestion['original'];
 
     $('#txtArQuestion').text(question);
-    console.log("Question text "+question);
-    console.log("Var amount"+ innovTest.variantsAmount+1);
+
+    var variantsOrder = [1, 2, 3, 4];
+    shuffledVariantsOrder=shuffleArray(variantsOrder);
+    console.log("44Shuffled variants order ");
+    console.log(variantsOrder);
 
     for (var variantsCounter = 1; variantsCounter<innovTest.variantsAmount+1; variantsCounter++){ // Buttons are numberd 1-4
         let buttonName = "variant"+variantsCounter;
-        console.log ("777Text of the button "+currentQuestion[buttonName]);
         $("#variantBtn"+variantsCounter).text(currentQuestion[buttonName]);
     }
     console.log("Finishes setting question2 "+ new Date());
 }
 
-function shuffleArr(arr)
+function shuffleArray(array)
 {
-    arr.sort(function() {
+    array.sort(function() {
         return .5 - Math.random();
     });
 }
 
-function buildIntArrayWithLenght(lenght) {
-    let array = [];
-    for(let i = 0; i < lenght; i++) {
-        array.push(i);
-    }
-    return array;
-}
-
 function init() {
     innovTest.questions = readJson('testinnov.json');
-    // questionNumbers = buildIntArrayWithLenght(innovTest.questions.length);
-    console.log('questionssssssssssss34534 ' + innovTest.questions.length);
-    console.log('array');
-   // console.log(questionNumbers);
-    shuffleArr(innovTest.questions);
-    console.log('array after');
-   // console.log(questionNumbers);
+    shuffleArray(innovTest.questions);
     setQuestion(innovTest.questions[0]);
     initButtons();
 }
